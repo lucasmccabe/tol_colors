@@ -17,7 +17,7 @@ import warnings
 from collections import namedtuple
 from collections.abc import Sequence
 from importlib import resources
-from typing import Literal, NamedTuple, overload
+from typing import Literal, NamedTuple, overload, Union
 
 import matplotlib
 from matplotlib.colors import LinearSegmentedColormap, ListedColormap
@@ -169,7 +169,7 @@ colorsets = ColorsetMapping(
 
 
 def set_default_colors(
-    cset: str = "bright", fname: str | None = None, dry: bool = False
+    cset: str = "bright", fname: Union[str, None] = None, dry: bool = False
 ):
     """Modify matplotlibrc to set default colors to those of one of the colorsets.
 
@@ -259,7 +259,7 @@ def _make_discrete_cmap(name: str, colors: Sequence[str], bad: str) -> ListedCol
     return cmap
 
 
-class ColormapMapping(dict[str, LinearSegmentedColormap | ListedColormap]):
+class ColormapMapping(dict[str, Union[LinearSegmentedColormap, ListedColormap]]):
     """Mapping type to have better type checking."""
 
     @overload
@@ -291,9 +291,9 @@ class ColormapMapping(dict[str, LinearSegmentedColormap | ListedColormap]):
         ...
 
     @overload
-    def __getitem__(self, key: str) -> LinearSegmentedColormap | ListedColormap: ...
+    def __getitem__(self, key: str) -> Union[LinearSegmentedColormap, ListedColormap]: ...
 
-    def __getitem__(self, key: str) -> LinearSegmentedColormap | ListedColormap:
+    def __getitem__(self, key: str) -> Union[LinearSegmentedColormap, ListedColormap]:
         return super().__getitem__(key)
 
 
@@ -488,7 +488,7 @@ def tol_cset(colorset=None):
 @deprecated(["colormaps", "rainbow_discrete"], "2.0")
 def get_colormap(
     name: str, n_colors: int = 22
-) -> LinearSegmentedColormap | ListedColormap:
+) -> Union[LinearSegmentedColormap, ListedColormap]:
     """Return continuous and discrete colormaps for ordered data.
 
     .. deprecated:: 2.0
@@ -514,8 +514,8 @@ def get_colormap(
 
 @deprecated(["colormaps", "rainbow_discrete"], "2.0")
 def tol_cmap(
-    colormap: str | None = None, lut: int = 22
-) -> LinearSegmentedColormap | ListedColormap | list[str]:
+    colormap: Union[str, None] = None, lut: int = 22
+) -> Union[LinearSegmentedColormap, ListedColormap, list[str]]:
     """Return continuous and discrete colormaps for ordered data.
 
     .. deprecated:: 2.0
